@@ -53,7 +53,7 @@ public class MyMediaRecorder {
     }
 
     public double soundDb(double ampl){
-        return  20.0 * Math.log10(ampl / 51805.5336);
+        return  20.0 * Math.log10(ampl);
     }
 
     public double getAmplitude() {

@@ -19,8 +19,9 @@ public class MainActivity extends AppCompatActivity {
     private double amplitude;
     private double decibel;
     private Handler mainHandler = new Handler();
-    private static int LAPSE = 250;
+    private static int LAPSE = 100;
     private static double REFERENCE_PRESSURE = 1;
+    private double[] sampleArray = new double[5];
 
     private MyMediaRecorder mediaRecorder = new MyMediaRecorder();
 
@@ -48,25 +49,37 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             while(mediaRecorder.isRecording()){
-                amplitude = mediaRecorder.getAmplitude();
-                decibel = mediaRecorder.soundDb(amplitude);
-                mainHandler.post(updateUITask);
                 try {
-                    Thread.sleep(LAPSE);
+                    for(int i=0; i<sampleArray.length; i++){
+                        sampleArray[i] = mediaRecorder.getAmplitude();
+                        Thread.sleep(LAPSE);
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                amplitude = avgAmplitudeCal(sampleArray);
+                decibel = mediaRecorder.soundDb(amplitude);
+                mainHandler.post(updateUITask);
             }
         }
     };
+
+    private double avgAmplitudeCal(double[] array) {
+        double sum = 0;
+        int length = array.length;
+        for(int i=0; i<length ; i++){
+            sum +=array[i];
+        }
+        return (sum/length);
+    }
 
     private Runnable updateUITask = new Runnable() {
         @Override
         public void run() {
             String decibelInfo = String.valueOf(decibel);
             String amplitudeInfo = String.valueOf(amplitude);
-            txtDisplayAmplitude.setText(amplitudeInfo);
-            txtDisplayDecibel.setText(decibelInfo);
+            txtDisplayAmplitude.setText("Biên độ: " + amplitudeInfo);
+            txtDisplayDecibel.setText("Decibel: " + decibelInfo);
         }
     };
 }

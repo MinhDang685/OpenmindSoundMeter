@@ -24,18 +24,18 @@ public class MyMediaRecorder {
             {
                 mRecorder.prepare();
             }catch (java.io.IOException ioe) {
-                android.util.Log.e("[Monkey]", "IOException: " +
+                android.util.Log.e("[MyMediaRecord]", "IOException: " +
                         android.util.Log.getStackTraceString(ioe));
 
             }catch (java.lang.SecurityException e) {
-                android.util.Log.e("[Monkey]", "SecurityException: " +
+                android.util.Log.e("[MyMediaRecord]", "SecurityException: " +
                         android.util.Log.getStackTraceString(e));
             }
             try
             {
                 mRecorder.start();
             }catch (java.lang.SecurityException e) {
-                android.util.Log.e("[Monkey]", "SecurityException: " +
+                android.util.Log.e("[MyMediaRecord]", "SecurityException: " +
                         android.util.Log.getStackTraceString(e));
             }
 
@@ -74,7 +74,7 @@ public class MyMediaRecorder {
         return isRecording;
     }
 
-    public void setRecording(boolean recording) {
+    public void setRecordingStatus(boolean recording) {
         isRecording = recording;
     }
 }

@@ -15,8 +15,8 @@ import android.widget.*;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int MY_PERMISSIONS_REQUEST = 10;
     private static final String[] PERMISSIONS = {Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE};
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private ProgressBar progress;
     private TextView txtDisplayDecibel;
     private TextView txtDisplayAmplitude;
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
         checkPermission();
+        startRecording();
     }
 
     private Runnable recordingTask = new Runnable() {
@@ -87,14 +88,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startRecording() {
         mediaRecorder.startRecorder();
-        mediaRecorder.setRecordingStatus(true);
         myThread = new Thread(recordingTask);
         myThread.start();
     }
 
     public void stopRecording() {
         mediaRecorder.stopRecorder();
-        mediaRecorder.setRecordingStatus(false);
     }
 
     public boolean hasPermissions(Context context, String... permissions) {

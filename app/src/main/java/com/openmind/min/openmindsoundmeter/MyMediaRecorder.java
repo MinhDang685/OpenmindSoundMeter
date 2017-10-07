@@ -12,6 +12,10 @@ public class MyMediaRecorder {
     static final private double EMA_FILTER = 0.6;
     private boolean isRecording = false;
 
+    public MyMediaRecorder() {
+        mRecorder = null;
+    }
+
     public void startRecorder(){
         if (mRecorder == null)
         {
@@ -38,7 +42,7 @@ public class MyMediaRecorder {
                 android.util.Log.e("[MyMediaRecord]", "SecurityException: " +
                         android.util.Log.getStackTraceString(e));
             }
-
+            setRecordingStatus(true);
             //mEMA = 0.0;
         }
 
@@ -49,6 +53,7 @@ public class MyMediaRecorder {
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
+            setRecordingStatus(false);
         }
     }
 

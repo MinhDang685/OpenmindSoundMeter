@@ -1,13 +1,16 @@
 package com.openmind.min.openmindsoundmeter;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
@@ -39,6 +42,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonToggleRecording.setOnClickListener(this);
         txtDisplayAmplitude = (TextView) findViewById(R.id.textViewDisplayAmplitude);
         txtDisplayDecibel = (TextView) findViewById(R.id.textViewDisplayDecibel);
+
+        FragmentManager fm = getFragmentManager();
+        fm.beginTransaction().replace(R.id.fr_line,new LineChartFragment()).commit();
+       // startActivity(new Intent(this, LineChartFragment.class));
     }
 
     @Override

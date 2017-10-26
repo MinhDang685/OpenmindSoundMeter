@@ -1,4 +1,4 @@
-package com.openmind.min.openmindsoundmeter;
+package com.example.malartsoft.soundmeter;
 
 import android.media.MediaRecorder;
 
@@ -31,14 +31,14 @@ public class MyMediaRecorder {
                 android.util.Log.e("[MyMediaRecord]", "IOException: " +
                         android.util.Log.getStackTraceString(ioe));
 
-            }catch (java.lang.SecurityException e) {
+            }catch (SecurityException e) {
                 android.util.Log.e("[MyMediaRecord]", "SecurityException: " +
                         android.util.Log.getStackTraceString(e));
             }
             try
             {
                 mRecorder.start();
-            }catch (java.lang.SecurityException e) {
+            }catch (SecurityException e) {
                 android.util.Log.e("[MyMediaRecord]", "SecurityException: " +
                         android.util.Log.getStackTraceString(e));
             }

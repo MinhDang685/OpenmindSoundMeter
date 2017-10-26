@@ -1,4 +1,4 @@
-package com.openmind.min.openmindsoundmeter;
+package com.example.malartsoft.soundmeter;
 
 import org.junit.Test;
 

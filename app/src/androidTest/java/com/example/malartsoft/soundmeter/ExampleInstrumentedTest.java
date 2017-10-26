@@ -1,4 +1,4 @@
-package com.openmind.min.openmindsoundmeter;
+package com.example.malartsoft.soundmeter;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.openmind.min.openmindsoundmeter", appContext.getPackageName());
+        assertEquals("com.example.malartsoft.soundmeter", appContext.getPackageName());
     }
 }

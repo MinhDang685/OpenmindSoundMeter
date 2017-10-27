@@ -1,16 +1,21 @@
 package com.example.malartsoft.soundmeter;
 
 import android.app.Fragment;
+
+import com.github.mikephil.charting.data.Entry;
+
+import android.app.Fragment;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
+import android.support.v7.view.*;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -27,39 +32,33 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by malartsoft on 10/15/17.
- */
+import static android.R.attr.x;
+import static android.R.attr.y;
 
 public class LineChartFragment extends Fragment implements
         OnChartValueSelectedListener {
 
-    private Timer myTimer;
     protected Typeface mTfRegular;
-   // protected Typeface mTfLight;
-   private LineChart mChart;
-    private TextView tvX;
-private int time=0;
-    private int data=0;
+    // protected Typeface mTfLight;
+    public static LineChart mChart;
+    public TextView tvX;
+    public int _counts ;
+    public int _min;
+    public int _max;
+    public ArrayList<Entry> values = new ArrayList<Entry>();
+    public static  XAxis xAxis;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         View view = inflater.inflate(R.layout.line_chart_fragment,container,false);
-
-       // mTfRegular = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-       // mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
-       // tvX = (TextView) view.findViewById(R.id.tvXMax);
-        //tvX.setText("100");
-
         mChart = (LineChart) view.findViewById(R.id.chart1);
 
         // no description text
         mChart.getDescription().setEnabled(false);
 
         // enable touch gestures
-        //mChart.setTouchEnabled(true);
+        mChart.setTouchEnabled(false);
 
         mChart.setDragDecelerationFrictionCoef(0.9f);
 
@@ -67,21 +66,18 @@ private int time=0;
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
         mChart.setDrawGridBackground(false);
-        mChart.setHighlightPerDragEnabled(true);
+        mChart.setHighlightPerDragEnabled(false );
 
         // set an alternative background color
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setViewPortOffsets(0f, 0f, 0f, 0f);
-
         // add data
-        //setData(100, 30);
-        //mChart.invalidate();
-
+        initsetData();
         // get the legend (only possible after setting data)
         Legend l = mChart.getLegend();
         l.setEnabled(false);
 
-        XAxis xAxis = mChart.getXAxis();
+        xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.TOP_INSIDE);
         //xAxis.setTypeface(mTfLight);
         xAxis.setTextSize(10f);
@@ -90,25 +86,13 @@ private int time=0;
         xAxis.setDrawGridLines(true);
         xAxis.setTextColor(Color.rgb(255, 192, 56));
         xAxis.setCenterAxisLabels(true);
-        xAxis.setGranularity(1f); // one hour
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-
-            private SimpleDateFormat mFormat = new SimpleDateFormat("dd MMM HH:mm");
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-
-                long millis = TimeUnit.HOURS.toMillis((long) value);
-                return mFormat.format(new Date(millis));
-            }
-        });
-
+        /*Yaxis*/
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         //leftAxis.setTypeface(mTfLight);
         leftAxis.setTextColor(ColorTemplate.getHoloBlue());
         leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularityEnabled(true);
+        leftAxis.setGranularityEnabled(false);
         leftAxis.setAxisMinimum(0f);
         leftAxis.setAxisMaximum(170f);
         leftAxis.setYOffset(-9f);
@@ -116,51 +100,21 @@ private int time=0;
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
-
-        myTimer = new Timer();
-        myTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                time++;
-                setData(time,data);
-                //mChart.invalidate();
-            }
-
-        }, 0, 1000);
-
+        setMinMaxAxisX(0,100);
         return  view;
     }
 
-    public  void receiveData(int data){
-        this.data=data;
-        //mChart.invalidate();
+    public void setMinMaxAxisX(int _min, int _max){
+        xAxis.setAxisMaximum(_max);
+        xAxis.setAxisMinimum(_min);
     }
 
-    protected float getRandom(float range, float startsfrom) {
-        return (float) (Math.random() * range) + startsfrom;
+    public void validation(){
+        mChart.notifyDataSetChanged(); // let the chart know it's data changed
+        mChart.invalidate();
     }
-
-
-    ArrayList<Entry> values = new ArrayList<Entry>();
-    private void setData(int x, float y) {
-
-        // now in hours
-        //long now = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
-
-        //ArrayList<Entry> values = new ArrayList<Entry>();
-
-        //float from = now;
-
-        // count = hours
-       // float to = now + count;
-
-        // increment by 1 hour
-//        for (float x = from; x < to; x++) {
-//
-//            float y = getRandom(range, 50);
-//            values.add(new Entry(x, y)); // add one entry per hour
-//        }
-         values.add(new Entry(x, y)); // add one entry per hour
+    private void initsetData() {
+        values.add(new Entry());
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(values, "DataSet 1");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -181,9 +135,38 @@ private int time=0;
 
         // set data
         mChart.setData(data);
-       // mChart.invalidate();
+        mChart.invalidate();
     }
 
+    public void setData(Entry _entry){
+        if(_entry.getX()> mChart.getXAxis().getAxisMaximum() - 5 ){
+            values.remove((int)_entry.getX()%95);
+            mChart.getXAxis().setAxisMinimum(mChart.getXAxis().getAxisMinimum() +1);
+            mChart.getXAxis().setAxisMaximum(mChart.getXAxis().getAxisMaximum() +1);
+        }
+        values.add(_entry);
+        // create a dataset and give it a type
+        LineDataSet set1 = new LineDataSet(values, "DataSet 1");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set1.setColor(ColorTemplate.getHoloBlue());
+        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setLineWidth(1.5f);
+        set1.setDrawCircles(false);
+        set1.setDrawValues(false);
+        set1.setFillAlpha(65);
+        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setHighLightColor(Color.rgb(244, 117, 117));
+        set1.setDrawCircleHole(false);
+
+        // create a data object with the datasets
+        LineData data = new LineData(set1);
+        data.setValueTextColor(Color.WHITE);
+        data.setValueTextSize(9f);
+
+        // set data
+        mChart.setData(data);
+        //  mChart.invalidate();
+    }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {

@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.data.Entry;
+
 public class MainActivity extends AppCompatActivity
         implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
     private static final int MY_PERMISSIONS_REQUEST = 10;
@@ -45,6 +47,13 @@ public class MainActivity extends AppCompatActivity
     private MyMediaRecorder mediaRecorder = new MyMediaRecorder();
     private Thread myThread = null;
     LineChartFragment lineChart ;
+
+    Bundle _bundle = new Bundle();
+    private int _min = 0;
+    private int _max = 100;
+    private double argDeciben = 0;
+    private int time = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +94,8 @@ public class MainActivity extends AppCompatActivity
     private Runnable recordingTask = new Runnable() {
         @Override
         public void run() {
+            int check = 0;
+            double tmp_deci = 0;
             while(mediaRecorder.isRecording()){
                 try {
                     for(int i=0; i<sampleArray.length; i++){
@@ -95,8 +106,18 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 amplitude = avgAmplitudeCal(sampleArray);
-                lineChart.receiveData((int)amplitude);
                 decibel = mediaRecorder.soundDb(amplitude);
+
+
+                if(check % 2 == 0){
+//                    if(time + 5 > _max){
+//                        chart.setMinMaxAxisX(_min + 1, _max +1);
+//                    }
+                    lineChart.setData(new Entry(time,(int)((tmp_deci + decibel)/(tmp_deci==0?1:2))));
+                    //  chart.validation();
+                    time++;
+                }
+                tmp_deci = decibel;
                 mainHandler.post(updateUITask);
             }
         }
@@ -118,6 +139,7 @@ public class MainActivity extends AppCompatActivity
             String amplitudeInfo = String.valueOf(amplitude);
             txtDisplayAmplitude.setText("Biên độ: " + amplitudeInfo);
             txtDisplayDecibel.setText("Decibel: " + decibelInfo);
+            lineChart.validation();
         }
     };
 

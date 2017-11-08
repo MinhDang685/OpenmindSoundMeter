@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
+
+
+        lintOptions {
+            abortOnError false
+        }
+
     compileSdkVersion 25
     buildToolsVersion "26.0.2"
     defaultConfig {

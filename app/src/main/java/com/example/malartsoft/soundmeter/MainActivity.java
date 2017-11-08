@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.github.anastr.speedviewlib.*;
 
 import com.github.mikephil.charting.data.Entry;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     private static int LAPSE = 100;
     private static double REFERENCE_PRESSURE = 1;
     private double[] sampleArray = new double[5];
+    private Gauge gauge;
 
     private MyMediaRecorder mediaRecorder = new MyMediaRecorder();
     private Thread myThread = null;
@@ -75,7 +77,8 @@ public class MainActivity extends AppCompatActivity
         buttonToggleRecording.setOnClickListener(this);
         txtDisplayAmplitude = (TextView) findViewById(R.id.textViewDisplayAmplitude);
         txtDisplayDecibel = (TextView) findViewById(R.id.textViewDisplayDecibel);
-
+        gauge = (Gauge) findViewById(R.id.speedometer);
+        gauge.setUnit("decibel");
         lineChart = new LineChartFragment();
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.fr_line,lineChart).commit();
@@ -139,6 +142,8 @@ public class MainActivity extends AppCompatActivity
             String amplitudeInfo = String.valueOf(amplitude);
             txtDisplayAmplitude.setText("Biên độ: " + amplitudeInfo);
             txtDisplayDecibel.setText("Decibel: " + decibelInfo);
+            gauge.speedTo((float) decibel);
+
             lineChart.validation();
         }
     };

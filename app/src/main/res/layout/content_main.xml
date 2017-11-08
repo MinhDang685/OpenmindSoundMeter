@@ -8,33 +8,50 @@
     tools:context="com.example.malartsoft.soundmeter.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="368dp"
+        android:layout_height="495dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp">
 
-        <Button
-            android:id="@+id/buttonToggleRecording"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/buttonToggleRecording"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click to PAUSE"></Button>
+
+            <TextView
+                android:id="@+id/textViewDisplayAmplitude"
+                android:layout_width="100dp"
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/textViewDisplayDecibel"
+                android:layout_width="100dp"
+                android:layout_height="50dp" />
+        </LinearLayout>
+
+        <com.github.anastr.speedviewlib.SpeedView
+            android:id="@+id/speedometer"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="Click to PAUSE" >
-        </Button>
-        <TextView
-            android:id="@+id/textViewDisplayAmplitude"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
-        <TextView
-            android:id="@+id/textViewDisplayDecibel"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_marginBottom="20dp"
+            app:sv_speedometerMode="TOP"
+            app:sv_minSpeed="0"
+            app:sv_maxSpeed="120"/>
 
         <fragment
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:id="@+id/fr_line"
             android:name="com.example.malartsoft.soundmeter.LineChartFragment"
-            ></fragment>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </fragment>
 
     </LinearLayout>
 

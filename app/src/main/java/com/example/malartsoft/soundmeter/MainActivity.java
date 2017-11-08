@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.EdgeEffectCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,6 +29,8 @@ import com.github.anastr.speedviewlib.*;
 
 import com.github.mikephil.charting.data.Entry;
 
+import java.io.Console;
+
 public class MainActivity extends AppCompatActivity
         implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
     private static final int MY_PERMISSIONS_REQUEST = 10;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity
     private Handler mainHandler = new Handler();
     private static int LAPSE = 100;
     private static double REFERENCE_PRESSURE = 1;
+    private int STATUS = 0;
     private double[] sampleArray = new double[5];
     private Gauge gauge;
 
@@ -91,12 +95,21 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         checkPermission();
-        startRecording();
+        if(STATUS == 0)
+            startRecording();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
 
     private Runnable recordingTask = new Runnable() {
         @Override
         public void run() {
+            Log.i("Calculate", "start");
             int check = 0;
             double tmp_deci = 0;
             while(mediaRecorder.isRecording()){
@@ -123,6 +136,10 @@ public class MainActivity extends AppCompatActivity
                 tmp_deci = decibel;
                 mainHandler.post(updateUITask);
             }
+            amplitude = 0;
+            decibel = 0;
+            mainHandler.post(updateUITask);
+            Log.i("Calculate", "stop");
         }
     };
 
@@ -140,6 +157,8 @@ public class MainActivity extends AppCompatActivity
         public void run() {
             String decibelInfo = String.valueOf(decibel);
             String amplitudeInfo = String.valueOf(amplitude);
+            Log.i("AMP", String.valueOf(amplitude));
+            Log.i("DB", String.valueOf(decibel));
             txtDisplayAmplitude.setText("Biên độ: " + amplitudeInfo);
             txtDisplayDecibel.setText("Decibel: " + decibelInfo);
             gauge.speedTo((float) decibel);
@@ -152,10 +171,12 @@ public class MainActivity extends AppCompatActivity
         mediaRecorder.startRecorder();
         myThread = new Thread(recordingTask);
         myThread.start();
+        STATUS = 0;
     }
 
     public void stopRecording() {
         mediaRecorder.stopRecorder();
+        STATUS = 1;
     }
 
     public boolean hasPermissions(Context context, String... permissions) {
@@ -178,13 +199,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-//            case MY_PERMISSIONS_REQUEST: {
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                } else {
-//                    this.finishAffinity();
-//                }
-//            }
+            case MY_PERMISSIONS_REQUEST: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    this.finishAffinity();
+                }
+            }
         }
     }
 

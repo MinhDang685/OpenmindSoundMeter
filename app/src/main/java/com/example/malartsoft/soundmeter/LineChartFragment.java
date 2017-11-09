@@ -69,7 +69,7 @@ public class LineChartFragment extends Fragment implements
         mChart.setHighlightPerDragEnabled(false );
 
         // set an alternative background color
-        mChart.setBackgroundColor(Color.WHITE);
+        mChart.setBackgroundColor(Color.parseColor("#e3e3e3"));
         mChart.setViewPortOffsets(0f, 0f, 0f, 0f);
         // add data
         initsetData();
@@ -84,7 +84,7 @@ public class LineChartFragment extends Fragment implements
         xAxis.setTextColor(Color.WHITE);
         xAxis.setDrawAxisLine(false);
         xAxis.setDrawGridLines(true);
-        xAxis.setTextColor(Color.rgb(255, 192, 56));
+        xAxis.setTextColor(Color.rgb(11, 11, 11));
         xAxis.setCenterAxisLabels(true);
         /*Yaxis*/
         YAxis leftAxis = mChart.getAxisLeft();
@@ -96,7 +96,7 @@ public class LineChartFragment extends Fragment implements
         leftAxis.setAxisMinimum(0f);
         leftAxis.setAxisMaximum(170f);
         leftAxis.setYOffset(-9f);
-        leftAxis.setTextColor(Color.rgb(255, 192, 56));
+        leftAxis.setTextColor(Color.rgb(11, 11, 11));
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setEnabled(false);
@@ -118,8 +118,8 @@ public class LineChartFragment extends Fragment implements
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(values, "DataSet 1");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setColor(ColorTemplate.getHoloBlue());
-        set1.setValueTextColor(ColorTemplate.getHoloBlue());
+        set1.setColor(Color.RED);
+        set1.setValueTextColor(Color.RED);
         set1.setLineWidth(1.5f);
         set1.setDrawCircles(false);
         set1.setDrawValues(false);
@@ -148,13 +148,13 @@ public class LineChartFragment extends Fragment implements
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(values, "DataSet 1");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setColor(ColorTemplate.getHoloBlue());
-        set1.setValueTextColor(ColorTemplate.getHoloBlue());
-        set1.setLineWidth(1.5f);
+        set1.setColor(Color.RED);
+        set1.setValueTextColor(Color.RED);
+        set1.setLineWidth(1f);
         set1.setDrawCircles(false);
         set1.setDrawValues(false);
         set1.setFillAlpha(65);
-        set1.setFillColor(ColorTemplate.getHoloBlue());
+        set1.setFillColor(Color.RED);
         set1.setHighLightColor(Color.rgb(244, 117, 117));
         set1.setDrawCircleHole(false);
 

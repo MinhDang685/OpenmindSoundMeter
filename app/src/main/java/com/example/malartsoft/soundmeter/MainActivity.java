@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progress;
     private TextView txtDisplayDecibel;
     private TextView txtDisplayAmplitude;
+    private TextView alert;
     private Button buttonToggleRecording;
     private double amplitude;
     private double decibel;
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity
         buttonToggleRecording = (Button) findViewById(R.id.buttonToggleRecording);
         buttonToggleRecording.setOnClickListener(this);
         txtDisplayAmplitude = (TextView) findViewById(R.id.textViewDisplayAmplitude);
+        alert = (TextView) findViewById(R.id.alert);
         txtDisplayDecibel = (TextView) findViewById(R.id.textViewDisplayDecibel);
         gauge = (Gauge) findViewById(R.id.speedometer);
         gauge.setUnit("decibel");
@@ -174,9 +176,54 @@ public class MainActivity extends AppCompatActivity
             txtDisplayDecibel.setText("Decibel: " + decibelInfo);
             gauge.speedTo((float) decibel);
 
+            showAlert(decibel);
+
             lineChart.validation();
         }
     };
+
+    public void showAlert(double decibel){
+        if(decibel>=0 && decibel <= 20){
+            alert.setText((int)decibel+"dB : " + "Rustling leaves, Ticking watch");
+        }
+        else if(decibel>20 && decibel <= 30){
+            alert.setText((int)decibel+"dB : " + "Quiet whisper at 3 ft, Library");
+        }
+        else if(decibel>30 && decibel <= 40){
+            alert.setText((int)decibel+"dB : " + "Quiet residential area, Park");
+        }
+        else if(decibel>40 && decibel <= 50){
+            alert.setText((int)decibel+"dB : " + "Quiet office, Quiet street");
+        }
+        else if(decibel>50 && decibel <= 60){
+            alert.setText((int)decibel+"dB : " + "Normal conversation at 3 ft.");
+        }
+        else if(decibel>60 && decibel <= 70){
+            alert.setText((int)decibel+"dB : " + "Busy traffic, Phone ringtone");
+        }
+        else if(decibel>70 && decibel <= 80){
+            alert.setText((int)decibel+"dB : " + "Busy street, Alarm clock");
+        }
+        else if(decibel>80 && decibel <= 90){
+            alert.setText((int)decibel+"dB : " + "Factory machinery at 3 ft.");
+        }
+        else if(decibel>90 && decibel <= 100){
+            alert.setText((int)decibel+"dB : " + "Subway train, Blow dryer");
+        }
+        else if(decibel>100 && decibel <= 110){
+            alert.setText((int)decibel+"dB : " + "Rock music, Screaming child");
+        }
+        else if(decibel>110 && decibel <= 120){
+            alert.setText((int)decibel+"dB : " + "Threshold of pain, Thunder");
+        }
+        else if(decibel>120 && decibel <= 130){
+            alert.setText((int)decibel+"dB : " + "Jet engine at 100ft.");
+        }
+        else {
+            alert.setText((int)decibel+"dB : " + "Space shuttle lift-off");
+        }
+
+    }
 
     public void startRecording() {
         mediaRecorder.startRecorder();

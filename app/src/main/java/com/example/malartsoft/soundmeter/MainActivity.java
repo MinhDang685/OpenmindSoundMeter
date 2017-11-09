@@ -31,6 +31,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.github.anastr.speedviewlib.*;
 
 import com.github.mikephil.charting.data.Entry;
@@ -344,7 +346,8 @@ public class MainActivity extends AppCompatActivity
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
-
+            Toast.makeText(this, "Screen captured: "+mPath,
+                    Toast.LENGTH_SHORT).show();
             //openScreenshot(imageFile);
         } catch (Throwable e) {
             // Several error may come out with file handling or DOM

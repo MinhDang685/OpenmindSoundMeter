@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     private Runnable recordingTask = new Runnable() {
         @Override
         public void run() {
-            Log.i("Calculate", "start_Test1");
+            Log.i("Calculate", "start")
             int check = 0;
             double tmp_deci = 0;
             while(mediaRecorder.isRecording()){

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +43,9 @@ import com.github.mikephil.charting.data.Entry;
 import java.io.Console;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
@@ -72,6 +77,30 @@ public class MainActivity extends AppCompatActivity
     private double argDeciben = 0;
     private int time = 0;
 
+
+    private boolean statusAlertClick = false;
+    private LinearLayout linearLayoutAlert;// = (LinearLayout) findViewById(R.id.linearAlertLists);
+    private LinearLayout linearLayoutChart;// = (LinearLayout) findViewById(R.id.linearLayoutChart);
+
+    private ImageButton resetBtn ;//= (ImageButton) findViewById(R.id.buttonReset);
+    private ImageButton alertBtn;// = (ImageButton) findViewById(R.id.buttonShowAlertList );
+
+
+    private List<TextView> alertLists;
+    private TextView alert_1;
+    private TextView alert_2;
+    private TextView alert_3;
+    private TextView alert_4;
+    private TextView alert_5;
+    private TextView alert_6;
+    private TextView alert_7;
+    private TextView alert_8;
+    private TextView alert_9;
+    private TextView alert_10;
+    private TextView alert_11;
+    private TextView alert_12;
+    private TextView alert_13;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +119,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        linearLayoutAlert = (LinearLayout) findViewById(R.id.linearAlertLists);
+        linearLayoutChart = (LinearLayout) findViewById(R.id.linearLayoutChart);
+
+        resetBtn = (ImageButton) findViewById(R.id.buttonReset);
+
+        resetBtn.setOnClickListener(this);
+         alertBtn = (ImageButton) findViewById(R.id.buttonShowAlertList );
+
+        alertBtn.setOnClickListener(this);
 
         buttonToggleRecording = (Button) findViewById(R.id.buttonToggleRecording);
         buttonToggleRecording.setOnClickListener(this);
@@ -99,12 +137,49 @@ public class MainActivity extends AppCompatActivity
         gauge = (Gauge) findViewById(R.id.speedometer);
         gauge.setUnit("decibel");
         lineChart = new LineChartFragment();
+
+
+
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().replace(R.id.fr_line,lineChart).commit();
         // startActivity(new Intent(this, LineChartFragment.class));
-
+        setAlert();
     }
 
+
+    public void setAlert(){
+
+        alertLists=new ArrayList<TextView>();
+        alert_1 = (TextView) findViewById(R.id.alert_1);
+        alert_2 =(TextView) findViewById(R.id.alert_2);
+        alert_3= (TextView) findViewById(R.id.alert_3);
+        alert_4 =(TextView) findViewById(R.id.alert_4);
+        alert_5=(TextView) findViewById(R.id.alert_5);
+        alert_6=(TextView) findViewById(R.id.alert_6);
+        alert_7=(TextView) findViewById(R.id.alert_7);
+        alert_8=(TextView) findViewById(R.id.alert_8);
+        alert_9=(TextView) findViewById(R.id.alert_9);
+        alert_10=(TextView) findViewById(R.id.alert_10);
+        alert_11=(TextView) findViewById(R.id.alert_11);
+        alert_12=(TextView) findViewById(R.id.alert_12);
+        alert_13=(TextView) findViewById(R.id.alert_13);
+        alertLists.add(alert_1);
+        alertLists.add(alert_2);
+        alertLists.add(alert_3);
+        alertLists.add(alert_4);
+        alertLists.add(alert_5);
+        alertLists.add(alert_6);
+        alertLists.add(alert_7);
+        alertLists.add(alert_8);
+        alertLists.add(alert_9);
+        alertLists.add(alert_10);
+        alertLists.add(alert_11);
+        alertLists.add(alert_12);
+        alertLists.add(alert_13);
+
+
+
+    }
 
     @Override
     protected void onStart() {
@@ -184,45 +259,68 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
+    public void SetColorTextAlert(int index){
+        for(int i=0;i<alertLists.size();i++){
+            if(i==index-1){
+                alertLists.get(i).setTextColor(Color.rgb(255,0,0));
+            }else{
+                alertLists.get(i).setTextColor(Color.rgb(11,11,11));
+            }
+        }
+    }
+
     public void showAlert(double decibel){
         if(decibel>=0 && decibel <= 20){
             alert.setText((int)decibel+"dB : " + "Rustling leaves, Ticking watch");
+            SetColorTextAlert(13);
         }
         else if(decibel>20 && decibel <= 30){
             alert.setText((int)decibel+"dB : " + "Quiet whisper at 3 ft, Library");
+            SetColorTextAlert(12);
         }
         else if(decibel>30 && decibel <= 40){
             alert.setText((int)decibel+"dB : " + "Quiet residential area, Park");
+            SetColorTextAlert(11);
         }
         else if(decibel>40 && decibel <= 50){
             alert.setText((int)decibel+"dB : " + "Quiet office, Quiet street");
+            SetColorTextAlert(10);
         }
         else if(decibel>50 && decibel <= 60){
             alert.setText((int)decibel+"dB : " + "Normal conversation at 3 ft.");
+            SetColorTextAlert(9);
         }
         else if(decibel>60 && decibel <= 70){
             alert.setText((int)decibel+"dB : " + "Busy traffic, Phone ringtone");
+            SetColorTextAlert(8);
         }
         else if(decibel>70 && decibel <= 80){
             alert.setText((int)decibel+"dB : " + "Busy street, Alarm clock");
+            SetColorTextAlert(7);
         }
         else if(decibel>80 && decibel <= 90){
             alert.setText((int)decibel+"dB : " + "Factory machinery at 3 ft.");
+            SetColorTextAlert(6);
         }
         else if(decibel>90 && decibel <= 100){
             alert.setText((int)decibel+"dB : " + "Subway train, Blow dryer");
+            SetColorTextAlert(5);
         }
         else if(decibel>100 && decibel <= 110){
             alert.setText((int)decibel+"dB : " + "Rock music, Screaming child");
+            SetColorTextAlert(4);
         }
         else if(decibel>110 && decibel <= 120){
             alert.setText((int)decibel+"dB : " + "Threshold of pain, Thunder");
+            SetColorTextAlert(3);
         }
         else if(decibel>120 && decibel <= 130){
             alert.setText((int)decibel+"dB : " + "Jet engine at 100ft.");
+            SetColorTextAlert(2);
         }
         else {
             alert.setText((int)decibel+"dB : " + "Space shuttle lift-off");
+            SetColorTextAlert(1);
         }
 
     }
@@ -288,6 +386,23 @@ public class MainActivity extends AppCompatActivity
                     buttonToggleRecording.setText("Click to PLAY");
                 }
                 break;
+            }
+            case R.id.buttonShowAlertList:{
+                if(!statusAlertClick){
+                    statusAlertClick = true;
+                    linearLayoutAlert.setVisibility(View.VISIBLE);
+                    linearLayoutChart.setVisibility(View.INVISIBLE);
+                    alert.setVisibility(View.INVISIBLE);
+
+                    linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                }else{
+                    statusAlertClick =false;
+                    linearLayoutAlert.setVisibility(View.INVISIBLE);
+                    linearLayoutChart.setVisibility(View.VISIBLE);
+                    alert.setVisibility(View.VISIBLE);
+
+                    linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                }
             }
 
         }

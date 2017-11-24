@@ -34,8 +34,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.github.anastr.speedviewlib.*;
 
 import com.github.mikephil.charting.data.Entry;
@@ -199,7 +197,7 @@ public class MainActivity extends AppCompatActivity
     private Runnable recordingTask = new Runnable() {
         @Override
         public void run() {
-            Log.i("Calculate", "start");
+            Log.i("Calculate", "start")
             int check = 0;
             double tmp_deci = 0;
             while(mediaRecorder.isRecording()){
@@ -461,8 +459,7 @@ public class MainActivity extends AppCompatActivity
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
-            Toast.makeText(this, "Screen captured: "+mPath,
-                    Toast.LENGTH_SHORT).show();
+
             //openScreenshot(imageFile);
         } catch (Throwable e) {
             // Several error may come out with file handling or DOM

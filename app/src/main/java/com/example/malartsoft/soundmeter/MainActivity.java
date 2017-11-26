@@ -35,7 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.github.anastr.speedviewlib.*;
-
+import android.os.Vibrator;
 import com.github.mikephil.charting.data.Entry;
 
 import java.io.Console;
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity
 
     private ImageButton resetBtn ;//= (ImageButton) findViewById(R.id.buttonReset);
     private ImageButton alertBtn;// = (ImageButton) findViewById(R.id.buttonShowAlertList );
-
+    private ImageButton showChart;
 
     private List<TextView> alertLists;
     private TextView alert_1;
@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity
     private TextView alert_11;
     private TextView alert_12;
     private TextView alert_13;
+
+    private int vibrator = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +127,11 @@ public class MainActivity extends AppCompatActivity
         resetBtn.setOnClickListener(this);
          alertBtn = (ImageButton) findViewById(R.id.buttonShowAlertList );
 
+
         alertBtn.setOnClickListener(this);
+
+        showChart = (ImageButton) findViewById(R.id.buttonShowAlertListChart );
+        showChart.setOnClickListener(this);
 
         buttonToggleRecording = (Button) findViewById(R.id.buttonToggleRecording);
         buttonToggleRecording.setOnClickListener(this);
@@ -144,6 +150,10 @@ public class MainActivity extends AppCompatActivity
         setAlert();
     }
 
+    public void setVibrator(){
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);
+    }
 
     public void setAlert(){
 
@@ -268,6 +278,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showAlert(double decibel){
+
+        if(decibel>vibrator){
+            setVibrator();
+        }
+
         if(decibel>=0 && decibel <= 20){
             alert.setText((int)decibel+"dB : " + "Rustling leaves, Ticking watch");
             SetColorTextAlert(13);
@@ -386,21 +401,37 @@ public class MainActivity extends AppCompatActivity
                 break;
             }
             case R.id.buttonShowAlertList:{
-                if(!statusAlertClick){
-                    statusAlertClick = true;
+                //if(!statusAlertClick){
+                   // statusAlertClick = true;
                     linearLayoutAlert.setVisibility(View.VISIBLE);
-                    linearLayoutChart.setVisibility(View.INVISIBLE);
-                    alert.setVisibility(View.INVISIBLE);
+                    linearLayoutChart.setVisibility(View.GONE);
+                    alert.setVisibility(View.GONE);
+                    alertBtn.setVisibility(View.GONE);
+                    showChart.setVisibility(View.VISIBLE);
+                    //alertBtn.setBackgroundResource(R.drawable.chart);
+                    //alertBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+//                }else{
+//                    statusAlertClick =false;
+//                    linearLayoutAlert.setVisibility(View.GONE);
+//                    linearLayoutChart.setVisibility(View.VISIBLE);
+//                    alert.setVisibility(View.VISIBLE);
+//                   // alertBtn.setBackgroundResource(R.drawable.ic_t);
+//                    //linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+//                }
+                break;
+            }
+            case R.id.buttonShowAlertListChart:{
+                //statusAlertClick =false;
+                linearLayoutAlert.setVisibility(View.GONE);
+                linearLayoutChart.setVisibility(View.VISIBLE);
+                alert.setVisibility(View.VISIBLE);
 
-                    linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                }else{
-                    statusAlertClick =false;
-                    linearLayoutAlert.setVisibility(View.INVISIBLE);
-                    linearLayoutChart.setVisibility(View.VISIBLE);
-                    alert.setVisibility(View.VISIBLE);
+                alertBtn.setVisibility(View.VISIBLE);
+                showChart.setVisibility(View.GONE);
 
-                    linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
-                }
+                // alertBtn.setBackgroundResource(R.drawable.ic_t);
+                //linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+                break;
             }
 
         }
@@ -466,6 +497,16 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
     }
+
+    public  void ShareApp(){
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        String shareBody = "https://play.google.com/store/apps/details?id=kr.sira.sound";
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "SoundMeter");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(sharingIntent, "Share via"));
+    }
+
     private void openScreenshot(File imageFile) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
@@ -487,8 +528,14 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+            startActivity(new Intent(MainActivity.this, Setting.class));
+            //drawer.closeDrawers();
 
+           // Intent myIntent = new Intent(this, Setting.class);
+            //myIntent.putExtra("key", value); //Optional parameters
+            //this.startActivity(myIntent);
+        } else if (id == R.id.nav_share) {
+            ShareApp();
         } else if (id == R.id.nav_send) {
 
         }

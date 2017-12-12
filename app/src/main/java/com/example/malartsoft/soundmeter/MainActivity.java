@@ -36,6 +36,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.github.anastr.speedviewlib.*;
 import android.os.Vibrator;
+import android.widget.Toast;
+
 import com.github.mikephil.charting.data.Entry;
 
 import java.io.Console;
@@ -490,8 +492,9 @@ public class MainActivity extends AppCompatActivity
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
-
-            //openScreenshot(imageFile);
+            Toast.makeText(this, "Screen captured: "+mPath,
+             Toast.LENGTH_SHORT).show();
+            openScreenshot(imageFile);
         } catch (Throwable e) {
             // Several error may come out with file handling or DOM
             e.printStackTrace();

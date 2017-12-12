@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -37,6 +39,7 @@ import android.widget.TextView;
 import com.github.anastr.speedviewlib.*;
 import android.os.Vibrator;
 import android.widget.Toast;
+import android.app.AlertDialog;
 
 import com.github.mikephil.charting.data.Entry;
 
@@ -101,7 +104,9 @@ public class MainActivity extends AppCompatActivity
     private TextView alert_12;
     private TextView alert_13;
 
-    private int vibrator = 20;
+    private static int vibrator = 100;
+    private int count_greater  = 0;
+    private  boolean arlet_isshow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,11 +155,18 @@ public class MainActivity extends AppCompatActivity
         fm.beginTransaction().replace(R.id.fr_line,lineChart).commit();
         // startActivity(new Intent(this, LineChartFragment.class));
         setAlert();
+        initVibrate();
     }
 
-    public void setVibrator(){
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(500);
+    public void setVibrator(boolean iscancel){
+        Vibrator v  = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);;
+        if(!iscancel){
+            long[] pattern = { 0, 100, 200, 100, 200, 100, 200};
+            v.vibrate(pattern , 3);
+        }
+        else{
+            v.cancel();
+        }
     }
 
     public void setAlert(){
@@ -282,7 +294,11 @@ public class MainActivity extends AppCompatActivity
     public void showAlert(double decibel){
 
         if(decibel>vibrator){
-            setVibrator();
+                setVibrator(false);
+        }
+        else{
+            count_greater = 0;
+            setVibrator(true);
         }
 
         if(decibel>=0 && decibel <= 20){
@@ -546,5 +562,13 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void initVibrate(){
+        SharedPreferences prefs = getSharedPreferences("limit_value_file",MODE_PRIVATE);
+        int limit_value = prefs.getInt("limit_value",100);
+        this.setVibrate_attribute(limit_value);
+    }
+    public static void setVibrate_attribute(int _vibrate){
+        vibrator =_vibrate;
     }
 }

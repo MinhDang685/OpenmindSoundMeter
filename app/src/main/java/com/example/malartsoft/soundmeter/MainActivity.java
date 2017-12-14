@@ -371,6 +371,7 @@ public class MainActivity extends AppCompatActivity
     public boolean startRecording() {
         if (!mediaRecorder.startRecorder())
             return false;
+
         myThread = new Thread(recordingTask);
         myThread.start();
         STATUS = 0;
@@ -422,6 +423,9 @@ public class MainActivity extends AppCompatActivity
     public void checkPermission() {
         if(!hasPermissions(getApplicationContext(), PERMISSIONS)) {
             requestNeededPermission();
+        } else {
+            if (STATUS == 0)
+                startRecording();
         }
     }
 

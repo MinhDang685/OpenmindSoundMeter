@@ -140,7 +140,7 @@ public class LineChartFragment extends Fragment implements
 
     public void setData(Entry _entry){
         if(_entry.getX()> mChart.getXAxis().getAxisMaximum() - 5 ){
-            values.remove((int)_entry.getX()%95);
+            values.remove(0);
             mChart.getXAxis().setAxisMinimum(mChart.getXAxis().getAxisMinimum() +1);
             mChart.getXAxis().setAxisMaximum(mChart.getXAxis().getAxisMaximum() +1);
         }

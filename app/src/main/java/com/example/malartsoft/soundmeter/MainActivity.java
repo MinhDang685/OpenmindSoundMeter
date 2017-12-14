@@ -275,8 +275,7 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         checkPermission();
-        if(STATUS == 0)
-            startRecording();
+
     }
 
     @Override
@@ -399,6 +398,9 @@ public class MainActivity extends AppCompatActivity
     public void requestNeededPermission() {
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, MY_PERMISSIONS_REQUEST);
+        } else {
+            if (STATUS == 0)
+                startRecording();
         }
     }
 
@@ -408,6 +410,8 @@ public class MainActivity extends AppCompatActivity
             case MY_PERMISSIONS_REQUEST: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (STATUS == 0)
+                        startRecording();
                 } else {
                     this.finishAffinity();
                 }
@@ -485,6 +489,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.buttonReset: {
                 time = 0;
                 lineChart.Clear();
+                break;
             }
             case R.id.changeBg: {
                 indexChangeBG++;
@@ -508,6 +513,7 @@ public class MainActivity extends AppCompatActivity
                         layout.setBackgroundColor(Color.rgb(215, 215, 215));
                         break;
                 }
+                break;
             }
 
         }

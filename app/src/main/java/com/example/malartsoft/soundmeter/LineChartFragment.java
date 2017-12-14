@@ -40,15 +40,15 @@ import static android.R.attr.y;
 public class LineChartFragment extends Fragment implements
         OnChartValueSelectedListener {
 
-    protected Typeface mTfRegular;
     // protected Typeface mTfLight;
     public static LineChart mChart;
+    public static XAxis xAxis;
     public TextView tvX;
     public int _counts ;
     public int _min;
     public int _max;
     public ArrayList<Entry> values = new ArrayList<Entry>();
-    public static  XAxis xAxis;
+    protected Typeface mTfRegular;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
         View view = inflater.inflate(R.layout.line_chart_fragment,container,false);
@@ -120,7 +120,7 @@ public class LineChartFragment extends Fragment implements
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
         set1.setColor(Color.RED);
         set1.setValueTextColor(Color.RED);
-        set1.setLineWidth(1.5f);
+        set1.setLineWidth(1f);
         set1.setDrawCircles(false);
         set1.setDrawValues(false);
         set1.setFillAlpha(65);
@@ -168,6 +168,13 @@ public class LineChartFragment extends Fragment implements
         //  mChart.invalidate();
     }
 
+    public void Clear() {
+        values.clear();
+        values = new ArrayList<Entry>();
+        setMinMaxAxisX(0, 100);
+        mChart.invalidate();
+        mChart.clear();
+    }
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         Log.i("Entry selected", e.toString());

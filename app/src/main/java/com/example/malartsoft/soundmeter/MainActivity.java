@@ -3,6 +3,7 @@ package com.example.malartsoft.soundmeter;
 import android.Manifest;
 import android.app.ActionBar;
 import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,39 +57,37 @@ public class MainActivity extends AppCompatActivity
     private static final String[] PERMISSIONS = {Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static int LAPSE = 100;
+    private static double REFERENCE_PRESSURE = 1;
+    private static int vibrator = 100;
+    LineChartFragment lineChart;
+    Bundle _bundle = new Bundle();
+    int indexChangeBG = 0;
     private ProgressBar progress;
     private TextView txtDisplayDecibel;
     private TextView txtDisplayAmplitude;
     private TextView alert;
-    private Button buttonToggleRecording;
+    private ImageButton buttonToggleRecording;
+    private ImageButton buttonToggleRecordingPause;
+    private ImageButton changeBg;
     private double amplitude;
     private double decibel;
     private Handler mainHandler = new Handler();
-    private static int LAPSE = 100;
-    private static double REFERENCE_PRESSURE = 1;
     private int STATUS = 0;
     private double[] sampleArray = new double[5];
     private Gauge gauge;
-
     private MyMediaRecorder mediaRecorder = new MyMediaRecorder();
     private Thread myThread = null;
-    LineChartFragment lineChart ;
-
-    Bundle _bundle = new Bundle();
     private int _min = 0;
     private int _max = 100;
     private double argDeciben = 0;
     private int time = 0;
-
-
     private boolean statusAlertClick = false;
     private LinearLayout linearLayoutAlert;// = (LinearLayout) findViewById(R.id.linearAlertLists);
     private LinearLayout linearLayoutChart;// = (LinearLayout) findViewById(R.id.linearLayoutChart);
-
     private ImageButton resetBtn ;//= (ImageButton) findViewById(R.id.buttonReset);
     private ImageButton alertBtn;// = (ImageButton) findViewById(R.id.buttonShowAlertList );
     private ImageButton showChart;
-
     private List<TextView> alertLists;
     private TextView alert_1;
     private TextView alert_2;
@@ -103,10 +102,75 @@ public class MainActivity extends AppCompatActivity
     private TextView alert_11;
     private TextView alert_12;
     private TextView alert_13;
-
-    private static int vibrator = 100;
     private int count_greater  = 0;
     private  boolean arlet_isshow = false;
+    private Runnable updateUITask = new Runnable() {
+        @Override
+        public void run() {
+            String decibelInfo = String.valueOf(decibel);
+            String amplitudeInfo = String.valueOf(amplitude);
+            Log.i("AMP", String.valueOf(amplitude));
+            Log.i("DB", String.valueOf(decibel));
+            txtDisplayAmplitude.setText("Biên độ: " + amplitudeInfo);
+            txtDisplayDecibel.setText("Decibel: " + decibelInfo);
+            gauge.speedTo((float) decibel);
+
+            showAlert(decibel);
+
+            lineChart.validation();
+        }
+    };
+    private Runnable recordingTask = new Runnable() {
+        @Override
+        public void run() {
+            Log.i("Calculate", "start");
+            int check = 0;
+            double tmp_deci = 0;
+            while (mediaRecorder.isRecording()) {
+                try {
+                    for (int i = 0; i < sampleArray.length; i++) {
+                        sampleArray[i] = mediaRecorder.getAmplitude();
+                        Thread.sleep(LAPSE);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                amplitude = avgAmplitudeCal(sampleArray);
+                decibel = mediaRecorder.soundDb(amplitude);
+
+
+                if (check % 2 == 0) {
+//                    if(time + 5 > _max){
+//                        chart.setMinMaxAxisX(_min + 1, _max +1);
+//                    }
+                    lineChart.setData(new Entry(time, (int) ((tmp_deci + decibel) / (tmp_deci == 0 ? 1 : 2))));
+                    //  chart.validation();
+                    time++;
+                }
+                tmp_deci = decibel;
+                mainHandler.post(updateUITask);
+            }
+            amplitude = 0;
+            decibel = 0;
+            mainHandler.post(updateUITask);
+            Log.i("Calculate", "stop");
+        }
+    };
+
+    public static void setVibrate_attribute(int _vibrate) {
+        vibrator = _vibrate;
+    }
+
+    public static void watchYoutubeVideo(Context context, String id) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + id));
+        try {
+            context.startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            context.startActivity(webIntent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +204,12 @@ public class MainActivity extends AppCompatActivity
         showChart = (ImageButton) findViewById(R.id.buttonShowAlertListChart );
         showChart.setOnClickListener(this);
 
-        buttonToggleRecording = (Button) findViewById(R.id.buttonToggleRecording);
+        buttonToggleRecording = (ImageButton) findViewById(R.id.buttonToggleRecording);
         buttonToggleRecording.setOnClickListener(this);
+        buttonToggleRecordingPause = (ImageButton) findViewById(R.id.buttonToggleRecordingPause);
+        buttonToggleRecordingPause.setOnClickListener(this);
+        changeBg = (ImageButton) findViewById(R.id.changeBg);
+        changeBg.setOnClickListener(this);
         txtDisplayAmplitude = (TextView) findViewById(R.id.textViewDisplayAmplitude);
         alert = (TextView) findViewById(R.id.alert);
         txtDisplayDecibel = (TextView) findViewById(R.id.textViewDisplayDecibel);
@@ -217,44 +285,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    private Runnable recordingTask = new Runnable() {
-        @Override
-        public void run() {
-            Log.i("Calculate", "start");
-            int check = 0;
-            double tmp_deci = 0;
-            while(mediaRecorder.isRecording()){
-                try {
-                    for(int i=0; i<sampleArray.length; i++){
-                        sampleArray[i] = mediaRecorder.getAmplitude();
-                        Thread.sleep(LAPSE);
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                amplitude = avgAmplitudeCal(sampleArray);
-                decibel = mediaRecorder.soundDb(amplitude);
-
-
-                if(check % 2 == 0){
-//                    if(time + 5 > _max){
-//                        chart.setMinMaxAxisX(_min + 1, _max +1);
-//                    }
-                    lineChart.setData(new Entry(time,(int)((tmp_deci + decibel)/(tmp_deci==0?1:2))));
-                    //  chart.validation();
-                    time++;
-                }
-                tmp_deci = decibel;
-                mainHandler.post(updateUITask);
-            }
-            amplitude = 0;
-            decibel = 0;
-            mainHandler.post(updateUITask);
-            Log.i("Calculate", "stop");
-        }
-    };
-
     private double avgAmplitudeCal(double[] array) {
         double sum = 0;
         int length = array.length;
@@ -263,23 +293,6 @@ public class MainActivity extends AppCompatActivity
         }
         return (sum/length);
     }
-
-    private Runnable updateUITask = new Runnable() {
-        @Override
-        public void run() {
-            String decibelInfo = String.valueOf(decibel);
-            String amplitudeInfo = String.valueOf(amplitude);
-            Log.i("AMP", String.valueOf(amplitude));
-            Log.i("DB", String.valueOf(decibel));
-            txtDisplayAmplitude.setText("Biên độ: " + amplitudeInfo);
-            txtDisplayDecibel.setText("Decibel: " + decibelInfo);
-            gauge.speedTo((float) decibel);
-
-            showAlert(decibel);
-
-            lineChart.validation();
-        }
-    };
 
     public void SetColorTextAlert(int index){
         for(int i=0;i<alertLists.size();i++){
@@ -356,16 +369,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void startRecording() {
-        mediaRecorder.startRecorder();
+    public boolean startRecording() {
+        if (!mediaRecorder.startRecorder())
+            return false;
         myThread = new Thread(recordingTask);
         myThread.start();
         STATUS = 0;
+        return true;
     }
 
-    public void stopRecording() {
-        mediaRecorder.stopRecorder();
+    public boolean stopRecording() {
+        if (!mediaRecorder.stopRecorder())
+            return false;
         STATUS = 1;
+        return true;
     }
 
     public boolean hasPermissions(Context context, String... permissions) {
@@ -409,25 +426,37 @@ public class MainActivity extends AppCompatActivity
         switch (v.getId()) {
             case  R.id.buttonToggleRecording: {
                 if(!mediaRecorder.isRecording()) {
-                    startRecording();
-                    buttonToggleRecording.setText("Click to PAUSE");
+                    if (!startRecording()) {
+                        Toast.makeText(this, "You're clicking too fast", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    buttonToggleRecording.setImageDrawable(getResources().getDrawable(R.drawable.pause));
+                    //buttonToggleRecording.setText("Click to PAUSE");
                 }
                 else {
-                    stopRecording();
-                    buttonToggleRecording.setText("Click to PLAY");
+                    if (!stopRecording()) {
+                        Toast.makeText(this, "You're clicking too fast", Toast.LENGTH_LONG).show();
+                        break;
+                    }
+                    buttonToggleRecording.setImageDrawable(getResources().getDrawable(R.drawable.play));
+                    //buttonToggleRecording.setText("Click to PAUSE");
                 }
                 break;
             }
             case R.id.buttonShowAlertList:{
                 //if(!statusAlertClick){
-                   // statusAlertClick = true;
-                    linearLayoutAlert.setVisibility(View.VISIBLE);
-                    linearLayoutChart.setVisibility(View.GONE);
-                    alert.setVisibility(View.GONE);
-                    alertBtn.setVisibility(View.GONE);
-                    showChart.setVisibility(View.VISIBLE);
-                    //alertBtn.setBackgroundResource(R.drawable.chart);
-                    //alertBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                // statusAlertClick = true;
+                linearLayoutAlert.setVisibility(View.VISIBLE);
+                linearLayoutChart.setVisibility(View.GONE);
+                alert.setVisibility(View.GONE);
+                alertBtn.setVisibility(View.GONE);
+                showChart.setVisibility(View.VISIBLE);
+
+
+                buttonToggleRecording.setVisibility(View.GONE);
+
+                //alertBtn.setBackgroundResource(R.drawable.chart);
+                //alertBtn.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 //                }else{
 //                    statusAlertClick =false;
 //                    linearLayoutAlert.setVisibility(View.GONE);
@@ -447,9 +476,38 @@ public class MainActivity extends AppCompatActivity
                 alertBtn.setVisibility(View.VISIBLE);
                 showChart.setVisibility(View.GONE);
 
+
+                buttonToggleRecording.setVisibility(View.VISIBLE);
                 // alertBtn.setBackgroundResource(R.drawable.ic_t);
                 //linearLayoutAlert.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
                 break;
+            }
+            case R.id.buttonReset: {
+                time = 0;
+                lineChart.Clear();
+            }
+            case R.id.changeBg: {
+                indexChangeBG++;
+                if (indexChangeBG > 3)
+                    indexChangeBG = 0;
+                LinearLayout layout = (LinearLayout) findViewById(R.id.parentLayout);
+                switch (indexChangeBG) {
+
+                    case 0:
+
+
+                        layout.setBackgroundColor(Color.rgb(250, 250, 250));
+                        break;
+                    case 1:
+                        layout.setBackgroundColor(Color.rgb(227, 227, 227));
+                        break;
+                    case 2:
+                        layout.setBackgroundColor(Color.rgb(200, 200, 200));
+                        break;
+                    case 3:
+                        layout.setBackgroundColor(Color.rgb(215, 215, 215));
+                        break;
+                }
             }
 
         }
@@ -487,6 +545,7 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
     private void takeScreenshot() {
         Date now = new Date();
         android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
@@ -508,7 +567,11 @@ public class MainActivity extends AppCompatActivity
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
+
             Toast.makeText(this, "Screen captured: "+mPath,
+                    Toast.LENGTH_SHORT).show();
+            //openScreenshot(imageFile);
+            Toast.makeText(this, "Screen captured: " + mPath,
              Toast.LENGTH_SHORT).show();
             openScreenshot(imageFile);
         } catch (Throwable e) {
@@ -533,6 +596,7 @@ public class MainActivity extends AppCompatActivity
         intent.setDataAndType(uri, "image/*");
         startActivity(intent);
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -540,35 +604,57 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            String dialog_title = "About";
+            String dialog_message = "Openmind team - Group 4 - TH2014";
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(dialog_message)
+                    .setTitle(dialog_title);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
         } else if (id == R.id.nav_gallery) {
-
+            String email = "openmindhcmus@gmail.com";
+            String subject = "Feedback - OpenmindSoundMeter";
+            String body = "";
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", email, null));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+            startActivity(Intent.createChooser(emailIntent, "Send email..."));
         } else if (id == R.id.nav_slideshow) {
-
+            String video_id = "kYSYv5u_88g";
+            watchYoutubeVideo(this, video_id);
         } else if (id == R.id.nav_manage) {
 
             startActivity(new Intent(MainActivity.this, Setting.class));
             //drawer.closeDrawers();
 
-           // Intent myIntent = new Intent(this, Setting.class);
+            // Intent myIntent = new Intent(this, Setting.class);
             //myIntent.putExtra("key", value); //Optional parameters
             //this.startActivity(myIntent);
         } else if (id == R.id.nav_share) {
             ShareApp();
         } else if (id == R.id.nav_send) {
-
+            String email = "openmindhcmus@gmail.com";
+            String subject = "Feedback - OpenmindSoundMeter";
+            String body = "";
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", email, null));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+            startActivity(Intent.createChooser(emailIntent, "Send email..."));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     private void initVibrate(){
         SharedPreferences prefs = getSharedPreferences("limit_value_file",MODE_PRIVATE);
         int limit_value = prefs.getInt("limit_value",100);
         this.setVibrate_attribute(limit_value);
     }
-    public static void setVibrate_attribute(int _vibrate){
-        vibrator =_vibrate;
-    }
+
+
 }

@@ -1,23 +1,42 @@
 package com.example.malartsoft.soundmeter;
 
 import android.media.MediaRecorder;
+import android.os.CountDownTimer;
 
 /**
  * Created by MIB on 10/4/2017.
  */
 
 public class MyMediaRecorder {
-    private MediaRecorder mRecorder;
-    private static double mEMA = 0.0;
     static final private double EMA_FILTER = 0.6;
+    private static double mEMA = 0.0;
+    private MediaRecorder mRecorder;
     private boolean isRecording = false;
+    private boolean canClicked = true;
 
     public MyMediaRecorder() {
         mRecorder = null;
     }
 
-    public void startRecorder(){
-        if (mRecorder == null)
+    private boolean checkClickPossible() {
+        return canClicked;
+    }
+
+    private void setTimeoutForClickable() {
+        new CountDownTimer(1000, 500) {
+
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            public void onFinish() {
+                canClicked = true;
+            }
+        }.start();
+    }
+
+    public boolean startRecorder() {
+        if (checkClickPossible() && mRecorder == null)
         {
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -43,17 +62,27 @@ public class MyMediaRecorder {
                         android.util.Log.getStackTraceString(e));
             }
             setRecordingStatus(true);
+            canClicked = false;
+            setTimeoutForClickable();
+            return true;
             //mEMA = 0.0;
+        } else {
+            return false;
         }
 
     }
 
-    public void stopRecorder() {
-        if (mRecorder != null) {
+    public boolean stopRecorder() {
+        if (checkClickPossible() && mRecorder != null) {
             mRecorder.stop();
             mRecorder.release();
             mRecorder = null;
             setRecordingStatus(false);
+            canClicked = false;
+            setTimeoutForClickable();
+            return true;
+        } else {
+            return false;
         }
     }
 

@@ -460,7 +460,7 @@ public class MainActivity extends AppCompatActivity
                 alertBtn.setVisibility(View.GONE);
                 showChart.setVisibility(View.VISIBLE);
 
-
+                changeBg.setVisibility(View.GONE);
                 buttonToggleRecording.setVisibility(View.GONE);
 
                 //alertBtn.setBackgroundResource(R.drawable.chart);
@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity
 
                 alertBtn.setVisibility(View.VISIBLE);
                 showChart.setVisibility(View.GONE);
-
+                changeBg.setVisibility(View.VISIBLE);
 
                 buttonToggleRecording.setVisibility(View.VISIBLE);
                 // alertBtn.setBackgroundResource(R.drawable.ic_t);
@@ -632,7 +632,7 @@ public class MainActivity extends AppCompatActivity
             emailIntent.putExtra(Intent.EXTRA_TEXT, body);
             startActivity(Intent.createChooser(emailIntent, "Send email..."));
         } else if (id == R.id.nav_slideshow) {
-            String video_id = "kYSYv5u_88g";
+            String video_id = "YQD_yS8_DAA";
             watchYoutubeVideo(this, video_id);
         } else if (id == R.id.nav_manage) {
 

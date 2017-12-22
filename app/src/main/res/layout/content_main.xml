@@ -96,7 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="180dp: Space shuttle lift-off"
+                android:text="180dB: Space shuttle lift-off"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -104,7 +104,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="130dp: Jet engine at 100ft."
+                android:text="130dB: Jet engine at 100ft."
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="120dp: Threshold of pain, Thunder"
+                android:text="120dB: Threshold of pain, Thunder"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -120,7 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="110dp: Rock music, Screaming child"
+                android:text="110dB: Rock music, Screaming child"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -128,7 +128,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="100dp: Subway train, Blow dryer"
+                android:text="100dB: Subway train, Blow dryer"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -136,7 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="90dp: Factory machinery at 3 ft."
+                android:text="90dB: Factory machinery at 3 ft."
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -144,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="80dp: Busy street, Alarm clock"
+                android:text="80dB: Busy street, Alarm clock"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -152,7 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="70dp: Busy traffic, Phone ringtone"
+                android:text="70dB: Busy traffic, Phone ringtone"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -160,7 +160,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="60dp: Normal conversation at 3 ft."
+                android:text="60dB: Normal conversation at 3 ft."
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -168,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="50dp: Quiet office, Quiet street"
+                android:text="50dB: Quiet office, Quiet street"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -176,7 +176,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="40dp: Quiet residential area, Park"
+                android:text="40dB: Quiet residential area, Park"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -184,7 +184,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="30dp: Quiet whisper at 3 ft, Library"
+                android:text="30dB: Quiet whisper at 3 ft, Library"
                 android:textColor="#111111"></TextView>
 
             <TextView
@@ -192,7 +192,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="20dp: Rustling leaves, Ticking watch"
+                android:text="20dB: Rustling leaves, Ticking watch"
                 android:textColor="#111111"></TextView>
         </LinearLayout>
 

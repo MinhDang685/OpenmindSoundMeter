@@ -23,7 +23,7 @@ public class Setting extends AppCompatActivity {
         Button btn_cancel;
         Button btn_ok;
         int minVal = 0;
-        int maxVal = 180;
+        int maxVal = 90;
         // Get the Intent that started this activity and extract the string
         //Intent intent = getIntent();
        // String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);

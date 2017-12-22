@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
         alert = (TextView) findViewById(R.id.alert);
         txtDisplayDecibel = (TextView) findViewById(R.id.textViewDisplayDecibel);
         gauge = (Gauge) findViewById(R.id.speedometer);
-        gauge.setUnit("decibel");
+        gauge.setUnit("dB");
         lineChart = new LineChartFragment();
 
 

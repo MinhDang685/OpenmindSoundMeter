@@ -22,21 +22,23 @@ public class Setting extends AppCompatActivity {
         final NumberPicker numberPicker;
         Button btn_cancel;
         Button btn_ok;
+        int minVal = 0;
+        int maxVal = 90;
         // Get the Intent that started this activity and extract the string
         //Intent intent = getIntent();
        // String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         btn_cancel = (Button) findViewById((R.id.btn_cancel));
         btn_ok = (Button)findViewById(R.id.btn_ok);
         numberPicker = (NumberPicker) findViewById(R.id.limit_value);
-        numberPicker.setMinValue(0);
+        numberPicker.setMinValue(minVal);
         //Specify the maximum value/number of NumberPicker
-        numberPicker.setMaxValue(90);
+        numberPicker.setMaxValue(maxVal);
         SharedPreferences prefs = getSharedPreferences("limit_value_file",MODE_PRIVATE);
-        int limit_value = prefs.getInt("limit_value",100);
+        int limit_value = prefs.getInt("limit_value",999999);
 
         //Gets whether the selector wheel wraps when reaching the min/max value.
         numberPicker.setWrapSelectorWheel(true);
-        if(limit_value <= 90){
+        if(limit_value <= maxVal){
             numberPicker.setValue(limit_value);
         }
         btn_ok.setOnClickListener(new View.OnClickListener() {

@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -72,11 +73,11 @@ public class MainActivity extends AppCompatActivity
     private ImageButton changeBg;
     private double amplitude;
     private double decibel;
-    private Handler mainHandler = new Handler();
+    private Handler mainHandler;// = new Handler();
     private int STATUS = 0;
     private double[] sampleArray = new double[5];
     private Gauge gauge;
-    private MyMediaRecorder mediaRecorder = new MyMediaRecorder();
+    private MyMediaRecorder mediaRecorder;//= new MyMediaRecorder();
     private Thread myThread = null;
     private int _min = 0;
     private int _max = 100;
@@ -181,6 +182,10 @@ public class MainActivity extends AppCompatActivity
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+
+        mediaRecorder = new MyMediaRecorder();
+        mainHandler = new Handler();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -224,6 +229,13 @@ public class MainActivity extends AppCompatActivity
         // startActivity(new Intent(this, LineChartFragment.class));
         setAlert();
         initVibrate();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // put your code here...
+
     }
 
     public void setVibrator(boolean iscancel){
@@ -405,6 +417,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void openDetailsSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", this.getPackageName(), null);
+        intent.setData(uri);
+        this.startActivity(intent);
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -414,7 +435,31 @@ public class MainActivity extends AppCompatActivity
                     if (STATUS == 0)
                         startRecording();
                 } else {
-                    this.finishAffinity();
+
+                    AlertDialog.Builder builder;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+                    } else {
+                        builder = new AlertDialog.Builder(this);
+                    }
+                    builder.setTitle("Permission")
+                            .setMessage("Press OK to set permission")
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                    openDetailsSettings();
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // do nothing
+                                    finishAffinity();
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                    // this.finishAffinity();
                 }
             }
         }
@@ -586,6 +631,30 @@ public class MainActivity extends AppCompatActivity
             openScreenshot(imageFile);
         } catch (Throwable e) {
             // Several error may come out with file handling or DOM
+
+            AlertDialog.Builder builder;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+            } else {
+                builder = new AlertDialog.Builder(this);
+            }
+            builder.setTitle("Permission")
+                    .setMessage("Press OK to set permission")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with delete
+                            openDetailsSettings();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                            // finishAffinity();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
             e.printStackTrace();
         }
     }
